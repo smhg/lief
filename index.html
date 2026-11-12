@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#14182a">
+  <!-- Added to the home screen, the game opens full screen without browser bars. -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lief">
+  <title>Lief</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #14182a;
+      overflow: hidden;
+      /* A game, not a page: no scrolling, zooming, selecting or tap flashes. */
+      touch-action: none;
+      overscroll-behavior: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    canvas {
+      background: #1a1c2c;
+    }
+
+    /* On-screen buttons for touch screens (src/touch.js sets --size and --gap
+       so they fit on the grass beside the road). */
+    #touch {
+      display: none;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+    #touch.on { display: block; }
+    #touch .pad {
+      position: absolute;
+      bottom: calc(var(--gap) + env(safe-area-inset-bottom));
+      display: flex;
+      gap: var(--gap);
+    }
+    #touch .steer { left: calc(var(--gap) + env(safe-area-inset-left)); }
+    #touch .drive {
+      right: calc(var(--gap) + env(safe-area-inset-right));
+      flex-direction: column;
+    }
+    #touch .btn {
+      box-sizing: border-box;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      border: calc(var(--size) * 0.045) solid rgba(255, 255, 255, 0.8);
+      background: rgba(20, 24, 40, 0.38);
+      display: grid;
+      place-items: center;
+      transition: transform 0.08s, background-color 0.08s;
+    }
+    #touch .btn svg {
+      width: 48%;
+      height: 48%;
+      fill: #ffffff;
+      stroke: #ffffff;
+      stroke-width: 3;
+      stroke-linejoin: round;
+    }
+    #touch .btn.held {
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0.92);
+    }
+    /* The park button: the blue sign above the lot, only near the lot, and
+       pulsing when parking would work. */
+    #touch .park {
+      border-radius: 50%;
+      background: #2f6fe0;
+      color: #ffffff;
+      font: bold calc(var(--size) * 0.56) / 1 "Arial Rounded MT Bold", "Nunito", "Segoe UI", Arial, sans-serif;
+      opacity: 0;
+      transform: scale(0.4);
+      transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+    }
+    #touch .park.shown { opacity: 1; transform: scale(1); }
+    #touch .park.ready {
+      background: #2f6fe0;
+      border-color: #ffd34d;
+      animation: lief-pulse 0.7s ease-in-out infinite alternate;
+    }
+    #touch .park.held { transform: scale(0.92); animation: none; }
+    @keyframes lief-pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="touch" aria-hidden="true">
+    <div class="pad steer">
+      <div class="btn" data-name="left"><svg viewBox="-12 -12 24 24"><path d="M0-8 7.5 4H-7.5Z" transform="rotate(-90)"/></svg></div>
+      <div class="btn" data-name="right"><svg viewBox="-12 -12 24 24"><path d="M0-8 7.5 4H-7.5Z" transform="rotate(90)"/></svg></div>
+    </div>
+    <div class="pad drive">
+      <div class="btn park" data-name="action">P</div>
+      <div class="btn" data-name="up"><svg viewBox="-12 -12 24 24"><path d="M0-8 7.5 4H-7.5Z"/></svg></div>
+      <div class="btn" data-name="down"><svg viewBox="-12 -12 24 24"><path d="M0-8 7.5 4H-7.5Z" transform="rotate(180)"/></svg></div>
+    </div>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
